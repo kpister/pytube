@@ -15,7 +15,7 @@ with open(os.path.join(here, "pytube", "version.py")) as fp:
     exec(fp.read())
 
 setup(
-    name="pytube3",
+    name="pytube",
     version=__version__,  # noqa: F821
     author="Nick Ficano, Harold Martin",
     author_email="nficano@gmail.com, harold.martin@gmail.com",
@@ -24,7 +24,7 @@ setup(
     url="https://github.com/hbmartin/pytube3",
     license="MIT",
     entry_points={"console_scripts": ["pytube3 = pytube.cli:main",],},
-    install_requires=["typing_extensions"],
+    install_requires=["typing_extensions", "browser_cookie3"],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Environment :: Console",

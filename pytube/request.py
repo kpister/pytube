@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Implements a simple wrapper around urlopen."""
 import logging
+import browser_cookie3
 from functools import lru_cache
 from http.client import HTTPResponse
 from typing import Dict
@@ -8,23 +9,41 @@ from typing import Iterable
 from typing import Optional
 from urllib.request import Request
 from urllib.request import urlopen
+from urllib.request import HTTPCookieProcessor
+from urllib.request import build_opener
 
 logger = logging.getLogger(__name__)
 
 
 def _execute_request(
-        url: str,
-        method: Optional[str] = None,
-        headers: Optional[Dict[str, str]] = None,
+    url: str, method: Optional[str] = None, headers: Optional[Dict[str, str]] = None,
 ) -> HTTPResponse:
+    if not url.lower().startswith("http"):
+        raise ValueError("Invalid URL")
+
     base_headers = {"User-Agent": "Mozilla/5.0"}
     if headers:
         base_headers.update(headers)
-    if url.lower().startswith("http"):
-        request = Request(url, headers=base_headers, method=method)
-    else:
-        raise ValueError("Invalid URL")
-    return urlopen(request)  # nosec
+
+    request = Request(url, method=method)
+    request.headers.update(base_headers)
+
+    try:
+        raise Exception("AS")
+        result = urlopen(request)  # nosec
+    except Exception as e:  # catch 429 error
+        # attempt to use cookies
+
+        # use cookies browser to skip `Too many request`
+        try:
+            cookies_jar = browser_cookie3.chrome(domain_name=".youtube.com")
+        except:
+            cookies_jar = browser_cookie3.firefox(domain_name=".youtube.com")
+
+        if cookies_jar is not None:
+            return build_opener(HTTPCookieProcessor(cookies_jar)).open(request)
+
+    return result
 
 
 def get(url, extra_headers=None) -> str:
@@ -44,7 +63,7 @@ def get(url, extra_headers=None) -> str:
 
 
 def stream(
-        url: str, chunk_size: int = 4096, range_size: int = 9437184
+    url: str, chunk_size: int = 4096, range_size: int = 9437184
 ) -> Iterable[bytes]:
     """Read the response in chunks.
     :param str url: The URL to perform the GET request for.
@@ -58,9 +77,7 @@ def stream(
     while downloaded < file_size:
         stop_pos = min(downloaded + range_size, file_size) - 1
         range_header = f"bytes={downloaded}-{stop_pos}"
-        response = _execute_request(
-            url, method="GET", headers={"Range": range_header}
-        )
+        response = _execute_request(url, method="GET", headers={"Range": range_header})
         if file_size == range_size:
             try:
                 content_range = response.info()["Content-Range"]

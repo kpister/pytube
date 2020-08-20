@@ -12,25 +12,16 @@ def test_title(request_get):
         "<title>(149) Python Tutorial for Beginners "
         "(For Absolute Beginners) - YouTube</title>"
     )
-    url = (
-        "https://www.fakeurl.com/playlist?list=PLS1QulWo1RIaJECMeUT4LFwJ"
-        "-ghgoSH6n"
-    )
+    url = "https://www.fakeurl.com/playlist?list=PLS1QulWo1RIaJECMeUT4LFwJ" "-ghgoSH6n"
     pl = Playlist(url)
     pl_title = pl.title()
-    assert (
-        pl_title
-        == "(149) Python Tutorial for Beginners (For Absolute Beginners)"
-    )
+    assert pl_title == "(149) Python Tutorial for Beginners (For Absolute Beginners)"
 
 
 @mock.patch("pytube.contrib.playlist.request.get")
 def test_init_with_playlist_url(request_get):
     request_get.return_value = ""
-    url = (
-        "https://www.youtube.com/playlist?list=PLS1QulWo1RIaJECMeUT4LFwJ"
-        "-ghgoSH6n"
-    )
+    url = "https://www.youtube.com/playlist?list=PLS1QulWo1RIaJECMeUT4LFwJ" "-ghgoSH6n"
     playlist = Playlist(url)
     assert playlist.playlist_url == url
 
@@ -230,9 +221,7 @@ def test_trimmed_pagination(request_get, playlist_html, playlist_long_html):
 
 # TODO: Test case not clear to me
 @mock.patch("pytube.contrib.playlist.request.get")
-def test_trimmed_pagination_not_found(
-    request_get, playlist_html, playlist_long_html
-):
+def test_trimmed_pagination_not_found(request_get, playlist_html, playlist_long_html):
     url = "https://www.fakeurl.com/playlist?list=whatever"
     request_get.side_effect = [
         playlist_long_html,
@@ -242,6 +231,6 @@ def test_trimmed_pagination_not_found(
         '"load_more_widget_html":""}',
         "{}",
     ]
-    playlist = Playlist(url) # noqa
+    playlist = Playlist(url)  # noqa
     # assert len(list(playlist.trimmed("wont-be-found"))) == 101 # noqa
     assert True
