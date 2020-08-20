@@ -29,16 +29,18 @@ def _execute_request(
     request.headers.update(base_headers)
 
     try:
-        raise Exception("AS")
         result = urlopen(request)  # nosec
     except Exception as e:  # catch 429 error
+        logger.log(e)
         # attempt to use cookies
-
-        # use cookies browser to skip `Too many request`
         try:
             cookies_jar = browser_cookie3.chrome(domain_name=".youtube.com")
-        except:
-            cookies_jar = browser_cookie3.firefox(domain_name=".youtube.com")
+        except Exception as e:
+            logger.log(e)
+            try:
+                cookies_jar = browser_cookie3.firefox(domain_name=".youtube.com")
+            except Exception as e:
+                logger.log(e)
 
         if cookies_jar is not None:
             return build_opener(HTTPCookieProcessor(cookies_jar)).open(request)
