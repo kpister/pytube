@@ -132,7 +132,13 @@ def video_info_url_age_restricted(video_id: str, embed_html: str) -> str:
     # Here we use ``OrderedDict`` so that the output is consistent between
     # Python 2.7+.
     eurl = f"https://youtube.googleapis.com/v/{video_id}"
-    params = OrderedDict([("video_id", video_id), ("eurl", eurl), ("sts", sts),])
+    params = OrderedDict(
+        [
+            ("video_id", video_id),
+            ("eurl", eurl),
+            ("sts", sts),
+        ]
+    )
     return _video_info_url(params)
 
 
@@ -239,7 +245,10 @@ def apply_signature(config_args: Dict, fmt: str, js: str) -> None:
         except KeyError:
             live_stream = (
                 json.loads(config_args["player_response"])
-                .get("playabilityStatus", {},)
+                .get(
+                    "playabilityStatus",
+                    {},
+                )
                 .get("liveStreamability")
             )
             if live_stream:

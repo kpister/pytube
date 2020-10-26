@@ -53,7 +53,7 @@ class Playlist(Sequence):
 
     @deprecated("This function will be removed in the future, please use .video_urls")
     def parse_links(self) -> List[str]:  # pragma: no cover
-        """ Deprecated function for returning list of URLs
+        """Deprecated function for returning list of URLs
 
         :return: List[str]
         """

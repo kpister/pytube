@@ -20,11 +20,11 @@ setup(
     author="Nick Ficano, Harold Martin",
     author_email="nficano@gmail.com, harold.martin@gmail.com",
     packages=["pytube", "pytube.contrib"],
-    package_data={"": ["LICENSE"],},
-    url="https://github.com/hbmartin/pytube3",
+    package_data={
+        "": ["LICENSE"],
+    },
+    url="https://github.com/kpister/pytube",
     license="MIT",
-    entry_points={"console_scripts": ["pytube3 = pytube.cli:main",],},
-    install_requires=["typing_extensions", "browser_cookie3"],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Environment :: Console",
@@ -35,9 +35,8 @@ setup(
         "Operating System :: Microsoft",
         "Operating System :: POSIX",
         "Operating System :: Unix",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python",
         "Topic :: Internet",
         "Topic :: Multimedia :: Video",
@@ -52,8 +51,13 @@ setup(
     zip_safe=True,
     python_requires=">=3.6",
     project_urls={
-        "Bug Reports": "https://github.com/hbmartin/pytube3/issues",
+        "Bug Reports": "https://github.com/kpister/pytube/issues",
         "Read the Docs": "https://pytube3.readthedocs.io/en/latest/?badge=latest",
     },
-    keywords=["youtube", "download", "video", "stream",],
+    keywords=[
+        "youtube",
+        "download",
+        "video",
+        "stream",
+    ],
 )

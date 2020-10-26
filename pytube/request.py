@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """Implements a simple wrapper around urlopen."""
 import logging
-import browser_cookie3
+
+# import browser_cookie3
 from functools import lru_cache
 from http.client import HTTPResponse
 from typing import Dict
@@ -9,14 +10,17 @@ from typing import Iterable
 from typing import Optional
 from urllib.request import Request
 from urllib.request import urlopen
-from urllib.request import HTTPCookieProcessor
-from urllib.request import build_opener
+
+# from urllib.request import HTTPCookieProcessor
+# from urllib.request import build_opener
 
 logger = logging.getLogger(__name__)
 
 
 def _execute_request(
-    url: str, method: Optional[str] = None, headers: Optional[Dict[str, str]] = None,
+    url: str,
+    method: Optional[str] = None,
+    headers: Optional[Dict[str, str]] = None,
 ) -> HTTPResponse:
     if not url.lower().startswith("http"):
         raise ValueError("Invalid URL")
@@ -25,6 +29,14 @@ def _execute_request(
     if headers:
         base_headers.update(headers)
 
+    if url.lower().startswith("http"):
+        request = Request(url, headers=base_headers, method=method)
+    else:
+        raise ValueError("Invalid URL")
+    return urlopen(request)  # nosec
+
+
+"""
     request = Request(url, method=method)
     request.headers.update(base_headers)
 
@@ -46,6 +58,7 @@ def _execute_request(
             return build_opener(HTTPCookieProcessor(cookies_jar)).open(request)
 
     return result
+"""
 
 
 def get(url, extra_headers=None) -> str:

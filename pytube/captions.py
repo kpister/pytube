@@ -63,7 +63,9 @@ class Caption:
         root = ElementTree.fromstring(xml_captions)
         for i, child in enumerate(list(root)):
             text = child.text or ""
-            caption = unescape(text.replace("\n", " ").replace("  ", " "),)
+            caption = unescape(
+                text.replace("\n", " ").replace("  ", " "),
+            )
             duration = float(child.attrib["dur"])
             start = float(child.attrib["start"])
             end = start + duration

@@ -18,7 +18,12 @@ parse_args = cli._parse_args
 @mock.patch("pytube.cli._parse_args")
 def test_main_invalid_url(_parse_args):  # noqa: PT019
     parser = argparse.ArgumentParser()
-    args = parse_args(parser, ["crikey",],)
+    args = parse_args(
+        parser,
+        [
+            "crikey",
+        ],
+    )
     _parse_args.return_value = args
     with pytest.raises(SystemExit):
         cli.main()
@@ -195,7 +200,8 @@ def test_main_download_by_itag(youtube):
 def test_main_build_playback_report(youtube):
     parser = argparse.ArgumentParser()
     args = parse_args(
-        parser, ["http://youtube.com/watch?v=9bZkp7q19f0", "--build-playback-report"],
+        parser,
+        ["http://youtube.com/watch?v=9bZkp7q19f0", "--build-playback-report"],
     )
     cli._parse_args = MagicMock(return_value=args)
     cli.build_playback_report = MagicMock()

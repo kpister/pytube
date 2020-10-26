@@ -1,26 +1,3 @@
-
-##  (24 JULY 2020) Note: Actively soliciting contributers!
-Ping @ronncc if you would like to help out 
-
-<div align="center">
-  <p>
-  <img src="https://github.com/nficano/pytube/blob/master/images/pytube.png?raw=true" width="350" height="328" alt="pytube logo" />
-  </p>
-  <p align="center">
-	  <img src="https://img.shields.io/pypi/v/pytube.svg" alt="pypi">
-	  <a href="https://travis-ci.org/nficano/pytube"><img src="https://travis-ci.org/nficano/pytube.svg?branch=master" /></a>
-	  <a href="http://python-pytube.readthedocs.io/en/latest/?badge=latest"><img src="https://readthedocs.org/projects/python-pytube/badge/?version=latest" /></a>
-	  <a href="https://coveralls.io/github/nficano/pytube?branch=master"><img src="https://coveralls.io/repos/github/nficano/pytube/badge.svg?branch=master#23e6f7ac56dd3bde" /></a>
-      <a href="https://pypi.org/project/pytube/"><img src="https://img.shields.io/pypi/dm/pytube.svg" alt="pypi"></a>
-	  <a href="https://pypi.python.org/pypi/pytube/"><img src="https://img.shields.io/pypi/pyversions/pytube.svg" /></a>
-    <p>
-  </p>
-</div>
-
-### pytube is sponsored by:	
-<a href="https://tracking.gitads.io/?repo=pytube/"><img src="https://images.gitads.io/pytube/" alt="GitAds"/></a>	
-</p>
-
 # pytube
 *pytube* is a very serious, lightweight, dependency-free Python library (and command-line utility) for downloading YouTube Videos.
 
@@ -30,8 +7,6 @@ YouTube is the most popular video-sharing platform in the world and as a hacker 
 *pytube* is a lightweight library written in Python. It has no third party dependencies and aims to be highly reliable.
 
 *pytube* also makes pipelining easy, allowing you to specify callback functions for different download events, such as  ``on progress`` or ``on complete``.
-
-Finally *pytube* also includes a command-line utility, allowing you to quickly download videos right from terminal.
 
 ### Behold, a perfect balance of simplicity versus flexibility:
 
@@ -50,7 +25,6 @@ Finally *pytube* also includes a command-line utility, allowing you to quickly d
 - Support for Both Progressive & DASH Streams
 - Support for downloading complete playlist
 - Easily Register ``on_download_progress`` & ``on_download_complete`` callbacks
-- Command-line Interfaced Included
 - Caption Track Support
 - Outputs Caption Tracks to .srt format (SubRip Subtitle)
 - Ability to Capture Thumbnail URL.
@@ -223,20 +197,3 @@ Similarly, if your application requires on-download progress logic, pytube expos
 
  >>> yt.register_on_progress_callback(show_progress_bar)
 ```
-
-## Command-line interface
-
-pytube also ships with a tiny cli interface for downloading and probing videos.
-
-Let's start with downloading:
-
-```bash
-$ pytube http://youtube.com/watch?v=9bZkp7q19f0 --itag=22
-```
-To view available streams:
-
-```bash
-$ pytube http://youtube.com/watch?v=9bZkp7q19f0 --list
-```
-
-Finally, if you're filing a bug report, the cli contains a switch called ``--build-playback-report``, which bundles up the state, allowing others to easily replay your issue.

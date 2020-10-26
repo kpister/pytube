@@ -188,6 +188,35 @@ class YouTube:
             self.js_url = extract.js_url(self.watch_html)
             self.js = request.get(self.js_url)
 
+    def validate(self) -> None:
+        """Check if this is a valid video.
+
+        :rtype: None
+
+        """
+        self.watch_html = request.get(url=self.watch_url)
+        if self.watch_html is None:
+            raise VideoUnavailable(video_id=self.video_id)
+        self.age_restricted = extract.is_age_restricted(self.watch_html)
+
+        if not self.age_restricted and "This video is private" in self.watch_html:
+            raise VideoUnavailable(video_id=self.video_id)
+
+        # Initialize the title
+        self.player_config_args = get_ytplayer_config(self.watch_html).get("args", {})
+        self.player_response = json.loads(self.player_config_args["player_response"])
+
+        title = self.player_response.get("videoDetails", {}).get("title")
+
+        # Fix for KeyError: 'title' issue #434
+        if not title:
+            i_start = self.watch_html.lower().index("<title>") + len("<title>")
+            i_end = self.watch_html.lower().index("</title>")
+            title = self.watch_html[i_start:i_end].strip()
+            index = title.lower().rfind(" - youtube")
+            title = title[:index] if index > 0 else title
+            self.player_response["videoDetails"]["title"] = unescape(title)
+
     def initialize_stream_objects(self, fmt: str) -> None:
         """Convert manifest data to instances of :class:`Stream <Stream>`.
 
@@ -265,9 +294,7 @@ class YouTube:
         :rtype: str
 
         """
-        return self.player_config_args.get("title") or (
-            self.player_response.get("videoDetails", {}).get("title")
-        )
+        return self.player_response.get("videoDetails", {}).get("title")
 
     @property
     def description(self) -> str:

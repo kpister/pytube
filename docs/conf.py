@@ -117,7 +117,13 @@ latex_elements = {}
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, "pytube3.tex", "pytube3 Documentation", "Nick Ficano", "manual",),
+    (
+        master_doc,
+        "pytube3.tex",
+        "pytube3 Documentation",
+        "Nick Ficano",
+        "manual",
+    ),
 ]
 
 # -- Options for manual page output ---------------------------------------
@@ -125,7 +131,13 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, "pytube3", "pytube3 Documentation", [author], 1,),
+    (
+        master_doc,
+        "pytube3",
+        "pytube3 Documentation",
+        [author],
+        1,
+    ),
 ]
 
 # -- Options for Texinfo output -------------------------------------------

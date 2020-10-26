@@ -222,7 +222,9 @@ class Stream:
 
         """
         file_path = self.get_file_path(
-            filename=filename, output_path=output_path, filename_prefix=filename_prefix,
+            filename=filename,
+            output_path=output_path,
+            filename_prefix=filename_prefix,
         )
 
         if skip_existing and self.exists_at_path(file_path):
@@ -232,7 +234,9 @@ class Stream:
 
         bytes_remaining = self.filesize
         logger.debug(
-            "downloading (%s total bytes) file to %s", self.filesize, file_path,
+            "downloading (%s total bytes) file to %s",
+            self.filesize,
+            file_path,
         )
 
         with open(file_path, "wb") as fh:
@@ -268,7 +272,8 @@ class Stream:
         """
         bytes_remaining = self.filesize
         logger.info(
-            "downloading (%s total bytes) file to buffer", self.filesize,
+            "downloading (%s total bytes) file to buffer",
+            self.filesize,
         )
 
         for chunk in request.stream(self.url):
@@ -331,7 +336,10 @@ class Stream:
             parts.extend(['res="{s.resolution}"', 'fps="{s.fps}fps"'])
             if not self.is_adaptive:
                 parts.extend(
-                    ['vcodec="{s.video_codec}"', 'acodec="{s.audio_codec}"',]
+                    [
+                        'vcodec="{s.video_codec}"',
+                        'acodec="{s.audio_codec}"',
+                    ]
                 )
             else:
                 parts.extend(['vcodec="{s.video_codec}"'])

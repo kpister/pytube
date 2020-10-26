@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 from typing import Any
 from typing import Optional
-
-from typing_extensions import Protocol
+from typing import Protocol
 
 
 class OnProgress(Protocol):
