@@ -155,8 +155,19 @@ def js_url(html: str) -> str:
     :param str html:
         The html contents of the watch page.
     """
-    base_js = get_ytplayer_config(html)["assets"]["js"]
+
+    try:
+        base_js = get_ytplayer_config(html)["assets"]["js"]
+    except:
+        base_js = get_js_url(html)
     return "https://youtube.com" + base_js
+
+
+def get_js_url(html):
+    # "jsUrl":"/s/player/4a1799bd/player_ias.vflset/en_US/base.js"
+    pattern = r"\"jsUrl\":\"([a-zA-Z/0-9_.]*)\""
+    basejs = re.match(pattern, html)
+    return basejs.group(1)
 
 
 def mime_type_codec(mime_type_codec: str) -> Tuple[str, List[str]]:
