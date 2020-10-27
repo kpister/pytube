@@ -166,8 +166,12 @@ def js_url(html: str) -> str:
 def get_js_url(html):
     # "jsUrl":"/s/player/4a1799bd/player_ias.vflset/en_US/base.js"
     pattern = r"\"jsUrl\":\"([a-zA-Z/0-9_.]*)\""
-    basejs = re.match(pattern, html)
-    return basejs.group(1)
+    regex = re.compile(pattern)
+    basejs = regex.search(html)
+    if basejs:
+        return basejs.group(1)
+
+    raise RegexMatchError(caller="get_js_url", pattern="pattern")
 
 
 def mime_type_codec(mime_type_codec: str) -> Tuple[str, List[str]]:
