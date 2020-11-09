@@ -9,7 +9,6 @@ smaller peripheral modules and functions.
 """
 import json
 import logging
-from html import unescape
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -21,7 +20,9 @@ from pytube import extract
 from pytube import request
 from pytube import Stream
 from pytube import StreamQuery
+from pytube.exceptions import RecordingUnavailable
 from pytube.exceptions import VideoUnavailable
+from pytube.exceptions import VideoPrivate
 from pytube.extract import apply_descrambler
 from pytube.extract import apply_signature
 from pytube.extract import get_ytplayer_config
@@ -107,23 +108,17 @@ class YouTube:
         :rtype: None
 
         """
-        logger.info("init started")
-
         self.vid_info = dict(parse_qsl(self.vid_info_raw))
-        if self.age_restricted:
-            self.player_config_args = self.vid_info
-        else:
-            assert self.watch_html is not None
-            self.player_config_args = get_ytplayer_config(self.watch_html)["args"]
+        self.player_config_args = self.vid_info
+        self.player_response = json.loads(self.vid_info["player_response"])
 
-            # Fix for KeyError: 'title' issue #434
-            if "title" not in self.player_config_args:  # type: ignore
-                i_start = self.watch_html.lower().index("<title>") + len("<title>")
-                i_end = self.watch_html.lower().index("</title>")
-                title = self.watch_html[i_start:i_end].strip()
-                index = title.lower().rfind(" - youtube")
-                title = title[:index] if index > 0 else title
-                self.player_config_args["title"] = unescape(title)
+        # On pre-signed videos, we need to use get_ytplayer_config to fix
+        #  the player_response item
+        if "streamingData" not in self.player_config_args["player_response"]:
+            config_response = get_ytplayer_config(self.watch_html)["args"][
+                "player_response"
+            ]
+            self.player_config_args["player_response"] = config_response
 
         # https://github.com/nficano/pytube/issues/165
         stream_maps = ["url_encoded_fmt_stream_map"]
@@ -153,8 +148,6 @@ class YouTube:
         self.stream_monostate.title = self.title
         self.stream_monostate.duration = self.length
 
-        logger.info("init finished successfully")
-
     def prefetch(self) -> None:
         """Eagerly download all necessary data.
 
@@ -169,8 +162,11 @@ class YouTube:
             raise VideoUnavailable(video_id=self.video_id)
         self.age_restricted = extract.is_age_restricted(self.watch_html)
 
-        if not self.age_restricted and "This video is private" in self.watch_html:
-            raise VideoUnavailable(video_id=self.video_id)
+        if extract.is_private(self.watch_html):
+            raise VideoPrivate(video_id=self.video_id)
+
+        if not extract.recording_available(self.watch_html):
+            raise RecordingUnavailable(video_id=self.video_id)
 
         if self.age_restricted:
             if not self.embed_html:
@@ -288,6 +284,15 @@ class YouTube:
         return f"https://img.youtube.com/vi/{self.video_id}/maxresdefault.jpg"
 
     @property
+    def publish_date(self):
+        """Get the publish date.
+
+        :rtype: datetime
+
+        """
+        return extract.publish_date(self.watch_html)
+
+    @property
     def title(self) -> str:
         """Get the video title.
 
@@ -303,9 +308,7 @@ class YouTube:
         :rtype: str
 
         """
-        return self.player_response.get("videoDetails", {}).get(
-            "shortDescription"
-        ) or extract._get_vid_descr(self.watch_html)
+        return self.player_response.get("videoDetails", {}).get("shortDescription")
 
     @property
     def rating(self) -> float:

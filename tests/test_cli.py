@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import argparse
+import os
 from unittest import mock
 from unittest.mock import MagicMock
 from unittest.mock import patch
@@ -76,7 +77,12 @@ def test_display_stream(youtube, stream):
 def test_download_caption_with_none(youtube, print_available):
     # Given
     caption = Caption(
-        {"url": "url1", "name": {"simpleText": "name1"}, "languageCode": "en"}
+        {
+            "url": "url1",
+            "name": {"simpleText": "name1"},
+            "languageCode": "en",
+            "vssId": ".en",
+        }
     )
     youtube.captions = CaptionQuery([caption])
     # When
@@ -89,7 +95,12 @@ def test_download_caption_with_none(youtube, print_available):
 def test_download_caption_with_language_found(youtube):
     youtube.title = "video title"
     caption = Caption(
-        {"url": "url1", "name": {"simpleText": "name1"}, "languageCode": "en"}
+        {
+            "url": "url1",
+            "name": {"simpleText": "name1"},
+            "languageCode": "en",
+            "vssId": ".en",
+        }
     )
     caption.download = MagicMock(return_value="file_path")
     youtube.captions = CaptionQuery([caption])
@@ -102,7 +113,12 @@ def test_download_caption_with_language_found(youtube):
 def test_download_caption_with_lang_not_found(youtube, print_available):
     # Given
     caption = Caption(
-        {"url": "url1", "name": {"simpleText": "name1"}, "languageCode": "en"}
+        {
+            "url": "url1",
+            "name": {"simpleText": "name1"},
+            "languageCode": "en",
+            "vssId": ".en",
+        }
     )
     youtube.captions = CaptionQuery([caption])
     # When
@@ -114,10 +130,20 @@ def test_download_caption_with_lang_not_found(youtube, print_available):
 def test_print_available_captions(capsys):
     # Given
     caption1 = Caption(
-        {"url": "url1", "name": {"simpleText": "name1"}, "languageCode": "en"}
+        {
+            "url": "url1",
+            "name": {"simpleText": "name1"},
+            "languageCode": "en",
+            "vssId": ".en",
+        }
     )
     caption2 = Caption(
-        {"url": "url2", "name": {"simpleText": "name2"}, "languageCode": "fr"}
+        {
+            "url": "url2",
+            "name": {"simpleText": "name2"},
+            "languageCode": "fr",
+            "vssId": ".fr",
+        }
     )
     query = CaptionQuery([caption1, caption2])
     # When
@@ -463,12 +489,12 @@ def test_ffmpeg_downloader(unique_name, download, run, unlink):
         [
             "ffmpeg",
             "-i",
-            "target/video_name.video_subtype",
+            os.path.join("target", "video_name.video_subtype"),
             "-i",
-            "target/audio_name.audio_subtype",
+            os.path.join("target", "audio_name.audio_subtype"),
             "-codec",
             "copy",
-            "target/safe_title.video_subtype",
+            os.path.join("target", "safe_title.video_subtype"),
         ]
     )
     unlink.assert_called()

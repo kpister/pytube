@@ -25,6 +25,7 @@ setup(
     },
     url="https://github.com/kpister/pytube",
     license="MIT",
+    install_requires=["typing_extensions"],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Environment :: Console",
@@ -52,7 +53,7 @@ setup(
     python_requires=">=3.6",
     project_urls={
         "Bug Reports": "https://github.com/kpister/pytube/issues",
-        "Read the Docs": "https://pytube3.readthedocs.io/en/latest/?badge=latest",
+        "Read the Docs": "https://python-pytube.readthedocs.io/en/latest",
     },
     keywords=[
         "youtube",
