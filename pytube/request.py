@@ -82,33 +82,33 @@ def seq_stream(url, chunk_size=default_chunk_size, range_size=default_range_size
     """
     # YouTube expects a request sequence number as part of the parameters.
     split_url = parse.urlsplit(url)
-    base_url = '%s://%s/%s?' % (split_url.scheme, split_url.netloc, split_url.path)
+    base_url = "%s://%s/%s?" % (split_url.scheme, split_url.netloc, split_url.path)
 
     querys = dict(parse.parse_qsl(split_url.query))
 
     # The 0th sequential request provides the file headers, which tell us
     #  information about how the file is segmented.
-    querys['sq'] = 0
+    querys["sq"] = 0
     url = base_url + parse.urlencode(querys)
 
-    segment_data = b''
+    segment_data = b""
     for chunk in stream(url):
         yield chunk
         segment_data += chunk
 
     # We can then parse the header to find the number of segments
-    stream_info = segment_data.split(b'\r\n')
-    segment_count_pattern = re.compile(b'Segment-Count: (\\d+)')
+    stream_info = segment_data.split(b"\r\n")
+    segment_count_pattern = re.compile(b"Segment-Count: (\\d+)")
     for line in stream_info:
         match = segment_count_pattern.search(line)
         if match:
-            segment_count = int(match.group(1).decode('utf-8'))
+            segment_count = int(match.group(1).decode("utf-8"))
 
     # We request these segments sequentially to build the file.
     seq_num = 1
     while seq_num <= segment_count:
         # Create sequential request URL
-        querys['sq'] = seq_num
+        querys["sq"] = seq_num
         url = base_url + parse.urlencode(querys)
 
         yield from stream(url)
@@ -165,16 +165,14 @@ def seq_filesize(url):
     total_filesize = 0
     # YouTube expects a request sequence number as part of the parameters.
     split_url = parse.urlsplit(url)
-    base_url = '%s://%s/%s?' % (split_url.scheme, split_url.netloc, split_url.path)
+    base_url = "%s://%s/%s?" % (split_url.scheme, split_url.netloc, split_url.path)
     querys = dict(parse.parse_qsl(split_url.query))
 
     # The 0th sequential request provides the file headers, which tell us
     #  information about how the file is segmented.
-    querys['sq'] = 0
+    querys["sq"] = 0
     url = base_url + parse.urlencode(querys)
-    response = _execute_request(
-        url, method="GET"
-    )
+    response = _execute_request(url, method="GET")
 
     response_value = response.read()
     # The file header must be added to the total filesize
@@ -182,8 +180,8 @@ def seq_filesize(url):
 
     # We can then parse the header to find the number of segments
     segment_count = 0
-    stream_info = response_value.split(b'\r\n')
-    segment_regex = b'Segment-Count: (\\d+)'
+    stream_info = response_value.split(b"\r\n")
+    segment_regex = b"Segment-Count: (\\d+)"
     for line in stream_info:
         # One of the lines should contain the segment count, but we don't know
         #  which, so we need to iterate through the lines to find it
@@ -193,16 +191,16 @@ def seq_filesize(url):
             pass
 
     if segment_count == 0:
-        raise RegexMatchError('seq_filesize', segment_regex)
+        raise RegexMatchError("seq_filesize", segment_regex)
 
     # We make HEAD requests to the segments sequentially to find the total filesize.
     seq_num = 1
     while seq_num <= segment_count:
         # Create sequential request URL
-        querys['sq'] = seq_num
+        querys["sq"] = seq_num
         url = base_url + parse.urlencode(querys)
 
-        total_filesize += int(head(url)['content-length'])
+        total_filesize += int(head(url)["content-length"])
         seq_num += 1
     return total_filesize
 

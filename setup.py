@@ -20,7 +20,9 @@ setup(
     author="Nick Ficano, Harold Martin",
     author_email="nficano@gmail.com, harold.martin@gmail.com",
     packages=["pytube", "pytube.contrib"],
-    package_data={ "": ["LICENSE"], },
+    package_data={
+        "": ["LICENSE"],
+    },
     url="https://github.com/kpister/pytube",
     license="MIT",
     install_requires=["typing_extensions"],

@@ -110,15 +110,15 @@ class YouTube:
         """
         self.vid_info = dict(parse_qsl(self.vid_info_raw))
         self.player_config_args = self.vid_info
-        self.player_response = json.loads(self.vid_info['player_response'])
+        self.player_response = json.loads(self.vid_info["player_response"])
 
         # On pre-signed videos, we need to use get_ytplayer_config to fix
         #  the player_response item
-        if 'streamingData' not in self.player_config_args['player_response']:
-            config_response = get_ytplayer_config(
-                self.watch_html
-            )['args']['player_response']
-            self.player_config_args['player_response'] = config_response
+        if "streamingData" not in self.player_config_args["player_response"]:
+            config_response = get_ytplayer_config(self.watch_html)["args"][
+                "player_response"
+            ]
+            self.player_config_args["player_response"] = config_response
 
         # https://github.com/nficano/pytube/issues/165
         stream_maps = ["url_encoded_fmt_stream_map"]
@@ -308,9 +308,7 @@ class YouTube:
         :rtype: str
 
         """
-        return self.player_response.get("videoDetails", {}).get(
-            "shortDescription"
-        )
+        return self.player_response.get("videoDetails", {}).get("shortDescription")
 
     @property
     def rating(self) -> float:

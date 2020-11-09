@@ -3,10 +3,8 @@ from typing import Any
 from typing import Optional
 
 
-class OnProgress():
-    def __call__(
-        self, stream: Any, chunk: bytes, bytes_remaining: int
-    ) -> None:
+class OnProgress:
+    def __call__(self, stream: Any, chunk: bytes, bytes_remaining: int) -> None:
         """On download progress callback function.
 
         :param stream:
@@ -22,7 +20,7 @@ class OnProgress():
         ...
 
 
-class OnComplete():
+class OnComplete:
     def __call__(self, stream: Any, file_path: Optional[str]) -> None:
         """On download complete handler function.
 

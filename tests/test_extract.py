@@ -39,9 +39,7 @@ def test_info_url_age_restricted(cipher_signature):
 
 
 def test_js_url(cipher_signature):
-    expected = (
-        "https://youtube.com/s/player/9b65e980/player_ias.vflset/en_US/base.js"
-    )
+    expected = "https://youtube.com/s/player/9b65e980/player_ias.vflset/en_US/base.js"
     result = extract.js_url(cipher_signature.watch_html)
     assert expected == result
 
@@ -55,7 +53,7 @@ def test_non_age_restricted(cipher_signature):
 
 
 def test_is_private(private):
-    assert extract.is_private(private['watch_html'])
+    assert extract.is_private(private["watch_html"])
 
 
 def test_not_is_private(cipher_signature):
@@ -69,11 +67,11 @@ def test_recording_available(cipher_signature):
 def test_publish_date(cipher_signature):
     expected = datetime(2019, 12, 5)
     assert cipher_signature.publish_date == expected
-    assert extract.publish_date('') is None
+    assert extract.publish_date("") is None
 
 
 def test_not_recording_available(missing_recording):
-    assert not extract.recording_available(missing_recording['watch_html'])
+    assert not extract.recording_available(missing_recording["watch_html"])
 
 
 def test_mime_type_codec():
@@ -98,6 +96,6 @@ def test_get_ytplayer_js_with_no_match_should_error():
 
 
 def test_signature_cipher_does_not_error(stream_dict):
-    config_args = extract.get_ytplayer_config(stream_dict)['args']
+    config_args = extract.get_ytplayer_config(stream_dict)["args"]
     extract.apply_descrambler(config_args, "url_encoded_fmt_stream_map")
     assert "s" in config_args["url_encoded_fmt_stream_map"][0].keys()

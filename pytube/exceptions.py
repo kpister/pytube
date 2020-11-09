@@ -64,7 +64,7 @@ class VideoPrivate(ExtractError):
         :param str video_id:
             A YouTube video identifier.
         """
-        super().__init__('%s is a private video' % video_id)
+        super().__init__("%s is a private video" % video_id)
         self.video_id = video_id
 
 
@@ -75,7 +75,7 @@ class RecordingUnavailable(ExtractError):
             A YouTube video identifier.
         """
         super().__init__(
-            '%s does not have a live stream recording available' % video_id
+            "%s does not have a live stream recording available" % video_id
         )
         self.video_id = video_id
 

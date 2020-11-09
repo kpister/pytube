@@ -20,7 +20,7 @@ def load_playback_file(filename):
         return json.loads(content)
 
 
-@mock.patch('pytube.request.urlopen')
+@mock.patch("pytube.request.urlopen")
 def load_and_init_from_playback_file(filename, mock_urlopen):
     """Load a gzip json playback file and create YouTube instance."""
     pb = load_playback_file(filename)
@@ -28,9 +28,9 @@ def load_and_init_from_playback_file(filename, mock_urlopen):
     # Mock the responses to YouTube
     mock_url_open_object = mock.Mock()
     mock_url_open_object.read.side_effect = [
-        pb['watch_html'].encode('utf-8'),
-        pb['vid_info_raw'].encode('utf-8'),
-        pb['js'].encode('utf-8')
+        pb["watch_html"].encode("utf-8"),
+        pb["vid_info_raw"].encode("utf-8"),
+        pb["js"].encode("utf-8"),
     ]
     mock_urlopen.return_value = mock_url_open_object
 
@@ -108,4 +108,4 @@ def stream_dict():
     )
     with gzip.open(file_path, "rb") as f:
         content = json.loads(f.read().decode("utf-8"))
-        return content['watch_html']
+        return content["watch_html"]

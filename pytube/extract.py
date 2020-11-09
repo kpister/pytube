@@ -34,11 +34,12 @@ def publish_date(watch_html: str):
     try:
         result = regex_search(
             r"(?<=itemprop=\"datePublished\" content=\")\d{4}-\d{2}-\d{2}",
-            watch_html, group=0
+            watch_html,
+            group=0,
         )
     except RegexMatchError:
         return None
-    return datetime.strptime(result, '%Y-%m-%d')
+    return datetime.strptime(result, "%Y-%m-%d")
 
 
 def recording_available(watch_html):
@@ -50,9 +51,7 @@ def recording_available(watch_html):
     :returns:
         Whether or not the content is private.
     """
-    unavailable_strings = [
-        'This live stream recording is not available.'
-    ]
+    unavailable_strings = ["This live stream recording is not available."]
     for string in unavailable_strings:
         if string in watch_html:
             return False
@@ -70,8 +69,8 @@ def is_private(watch_html):
     """
     private_strings = [
         "This is a private video. Please sign in to verify that you may see it.",
-        "\"simpleText\":\"Private video\"",
-        "This video is private."
+        '"simpleText":"Private video"',
+        "This video is private.",
     ]
     for string in private_strings:
         if string in watch_html:
@@ -179,10 +178,10 @@ def js_url(html: str) -> str:
         The html contents of the watch page.
     """
     try:
-        base_js = get_ytplayer_config(html)['assets']['js']
+        base_js = get_ytplayer_config(html)["assets"]["js"]
     except KeyError:
         base_js = get_ytplayer_js(html)
-        #base_js = get_js_url(html)
+        # base_js = get_js_url(html)
     return "https://youtube.com" + base_js
 
 
@@ -233,9 +232,7 @@ def get_ytplayer_js(html: str) -> Any:
     :returns:
         Path to YouTube's base.js file.
     """
-    js_url_patterns = [
-        r"(/s/player/[\w\d]+/[\w\d_/.]+/base\.js)"
-    ]
+    js_url_patterns = [r"(/s/player/[\w\d]+/[\w\d_/.]+/base\.js)"]
     for pattern in js_url_patterns:
         regex = re.compile(pattern)
         function_match = regex.search(html)
@@ -244,9 +241,7 @@ def get_ytplayer_js(html: str) -> Any:
             yt_player_js = function_match.group(1)
             return yt_player_js
 
-    raise RegexMatchError(
-        caller="get_ytplayer_js", pattern="js_url_patterns"
-    )
+    raise RegexMatchError(caller="get_ytplayer_js", pattern="js_url_patterns")
 
 
 def get_ytplayer_config(html: str) -> Any:
@@ -280,7 +275,7 @@ def get_ytplayer_config(html: str) -> Any:
     #  inside of it.
     setconfig_patterns = [
         r"yt\.setConfig\((.*'PLAYER_CONFIG':\s*{.+?})\);",
-        r"yt\.setConfig\((.*\"PLAYER_CONFIG\":\s*{.+?})\);"
+        r"yt\.setConfig\((.*\"PLAYER_CONFIG\":\s*{.+?})\);",
     ]
     for pattern in setconfig_patterns:
         regex = re.compile(pattern)
@@ -288,7 +283,7 @@ def get_ytplayer_config(html: str) -> Any:
         if function_match:
             logger.debug("finished regex search, matched: %s", pattern)
             yt_config = function_match.group(1)
-            return json.loads(yt_config)['PLAYER_CONFIG']
+            return json.loads(yt_config)["PLAYER_CONFIG"]
 
     raise RegexMatchError(
         caller="get_ytplayer_config", pattern="config_patterns, setconfig_patterns"
@@ -369,10 +364,10 @@ def apply_descrambler(stream_data: Dict, key: str) -> None:
     ):
         streaming_data = json.loads(stream_data["player_response"])["streamingData"]
         formats = []
-        if 'formats' in streaming_data.keys():
-            formats.extend(streaming_data['formats'])
-        if 'adaptiveFormats' in streaming_data.keys():
-            formats.extend(streaming_data['adaptiveFormats'])
+        if "formats" in streaming_data.keys():
+            formats.extend(streaming_data["formats"])
+        if "adaptiveFormats" in streaming_data.keys():
+            formats.extend(streaming_data["adaptiveFormats"])
         try:
             stream_data[key] = [
                 {
@@ -388,9 +383,7 @@ def apply_descrambler(stream_data: Dict, key: str) -> None:
         except KeyError:
             cipher_url = [
                 parse_qs(
-                    data[
-                        "cipher" if "cipher" in data.keys() else "signatureCipher"
-                    ]
+                    data["cipher" if "cipher" in data.keys() else "signatureCipher"]
                 )
                 for data in formats
             ]

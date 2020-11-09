@@ -97,20 +97,17 @@ def test_setup_logger(logging):
     logger.setLevel.assert_called_with(20)
 
 
-@mock.patch('builtins.open', new_callable=mock.mock_open)
-@mock.patch('pytube.request.urlopen')
+@mock.patch("builtins.open", new_callable=mock.mock_open)
+@mock.patch("pytube.request.urlopen")
 def test_create_mock_html_json(mock_url_open, mock_open):
-    video_id = '2lAe1cqCOXo'
-    gzip_html_filename = 'yt-video-%s-html.json.gz' % video_id
+    video_id = "2lAe1cqCOXo"
+    gzip_html_filename = "yt-video-%s-html.json.gz" % video_id
 
     # Get the pytube directory in order to navigate to /tests/mocks
     pytube_dir_path = os.path.abspath(
-        os.path.join(
-            os.path.dirname(__file__),
-            os.path.pardir
-        )
+        os.path.join(os.path.dirname(__file__), os.path.pardir)
     )
-    pytube_mocks_path = os.path.join(pytube_dir_path, 'tests', 'mocks')
+    pytube_mocks_path = os.path.join(pytube_dir_path, "tests", "mocks")
     gzip_html_filepath = os.path.join(pytube_mocks_path, gzip_html_filename)
 
     # Mock the responses to YouTube
@@ -121,10 +118,12 @@ def test_create_mock_html_json(mock_url_open, mock_open):
     # 2. vid_info_raw
     # 3. js
     mock_url_open_object.read.side_effect = [
-        (b'yt.setConfig({"PLAYER_CONFIG":{"args":[]}});'
-         b'"jsUrl":"/s/player/13371337/player_ias.vflset/en_US/base.js"'),
-        b'vid_info_raw',
-        b'js_result',
+        (
+            b'yt.setConfig({"PLAYER_CONFIG":{"args":[]}});'
+            b'"jsUrl":"/s/player/13371337/player_ias.vflset/en_US/base.js"'
+        ),
+        b"vid_info_raw",
+        b"js_result",
     ]
     mock_url_open.return_value = mock_url_open_object
 
@@ -132,16 +131,12 @@ def test_create_mock_html_json(mock_url_open, mock_open):
     result_data = create_mock_html_json(video_id)
 
     # Assert that a write was only made once
-    mock_open.assert_called_once_with(gzip_html_filepath, 'wb')
+    mock_open.assert_called_once_with(gzip_html_filepath, "wb")
 
     # The result data should look like this:
     gzip_file = io.BytesIO()
-    with gzip.GzipFile(
-        filename=gzip_html_filename,
-        fileobj=gzip_file,
-        mode='wb'
-    ) as f:
-        f.write(json.dumps(result_data).encode('utf-8'))
+    with gzip.GzipFile(filename=gzip_html_filename, fileobj=gzip_file, mode="wb") as f:
+        f.write(json.dumps(result_data).encode("utf-8"))
     gzip_data = gzip_file.getvalue()
 
     file_handle = mock_open.return_value.__enter__.return_value
@@ -149,10 +144,10 @@ def test_create_mock_html_json(mock_url_open, mock_open):
     # For some reason, write gets called multiple times, so we have to
     #  concatenate all the write calls to get the full data before we compare
     #  it to the BytesIO object value.
-    full_content = b''
+    full_content = b""
     for call in file_handle.write.call_args_list:
         args, kwargs = call
-        full_content += b''.join(args)
+        full_content += b"".join(args)
 
     # The file header includes time metadata, so *occasionally* a single
     #  byte will be off at the very beginning. In theory, this difference

@@ -28,7 +28,7 @@ class Caption:
         # Remove preceding '.' for backwards compatibility, e.g.:
         # English -> vssId: .en, languageCode: en
         # English (auto-generated) -> vssId: a.en, languageCode: en
-        self.code = self.code.strip('.')
+        self.code = self.code.strip(".")
 
     @property
     def xml_captions(self) -> str:
