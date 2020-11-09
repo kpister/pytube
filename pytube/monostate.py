@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 from typing import Any
 from typing import Optional
-from typing import Protocol
 
 
-class OnProgress(Protocol):
-    def __call__(self, stream: Any, chunk: bytes, bytes_remaining: int) -> None:
+class OnProgress():
+    def __call__(
+        self, stream: Any, chunk: bytes, bytes_remaining: int
+    ) -> None:
         """On download progress callback function.
 
         :param stream:
@@ -21,7 +22,7 @@ class OnProgress(Protocol):
         ...
 
 
-class OnComplete(Protocol):
+class OnComplete():
     def __call__(self, stream: Any, file_path: Optional[str]) -> None:
         """On download complete handler function.
 
